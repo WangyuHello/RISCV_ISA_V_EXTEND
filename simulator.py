@@ -21,16 +21,16 @@ class CryptoExecutor:
     def __init__(self, AsmCodeInit=None, DMemInit=None, IMemInit=None, log=None, verbose=False):
 
         # Hardware modeling
-        self._RF       = CryptoRegFiles()    
-        self._AsmCode  = CryptoAsmCode(InitFiles=AsmCodeInit)     
-        self._DataMem  = CryptoDataMemory(InitFile=DMemInit) 
+        self._RF       = CryptoRegFiles()
+        self._AsmCode  = CryptoAsmCode(InitFiles=AsmCodeInit)
+        self._DataMem  = CryptoDataMemory(InitFile=DMemInit)
         self._PCStack  = CryptoPCStack()
-        self._InstrSet = CryptoInstrSet()    
-        # InstrMem = CryptoInstrMemory(InitFile=IMemInit) # Not implemented yet   
+        self._InstrSet = CryptoInstrSet()
+        # InstrMem = CryptoInstrMemory(InitFile=IMemInit) # Not implemented yet
 
         # Executable information
         # Performance evaluation
-        self._IC          = {}    # Count of each instruction 
+        self._IC          = {}    # Count of each instruction
         self._Cycles      = {}    # Clock cycles of each instruction
         self._BeginSP     = None  # Begin stack pointer of the program
         self._EndSP       = None  # End stack pointer of the program
@@ -71,75 +71,86 @@ class CryptoExecutor:
         self._InstrSet.SetExec(Instr = "call",     Func = self._Execcall     )
 #        self._InstrSet.SetExec(Instr = "vcfg",     Func = self._Execvcfg     )
         # Instruction Set of RISC-V Vector
-#        self._InstrSet.SetExec(Instr = "vmadd",    Func = self._Execvmadd    )      
-#        self._InstrSet.SetExec(Instr = "vnmadd",   Func = self._Execvnmadd   )      
-#        self._InstrSet.SetExec(Instr = "vmsub",    Func = self._Execvmsub    )      
-#        self._InstrSet.SetExec(Instr = "vnmsub",   Func = self._Execvnmsub   )      
-        self._InstrSet.SetExec(Instr = "vadd",     Func = self._Execvadd     )      
-#        self._InstrSet.SetExec(Instr = "vaddi",    Func = self._Execvaddi    )      
-#        self._InstrSet.SetExec(Instr = "vsub",     Func = self._Execvsub     )      
-#        self._InstrSet.SetExec(Instr = "vsubi",    Func = self._Execvsubi    )      
-#        self._InstrSet.SetExec(Instr = "vand",     Func = self._Execvand     )      
-#        self._InstrSet.SetExec(Instr = "vandi",    Func = self._Execvandi    )      
-#        self._InstrSet.SetExec(Instr = "vdiv",     Func = self._Execvdiv     )      
-#        self._InstrSet.SetExec(Instr = "vsge",     Func = self._Execvsge     )      
-#        self._InstrSet.SetExec(Instr = "vsne",     Func = self._Execvsne     )      
-#        self._InstrSet.SetExec(Instr = "vslt",     Func = self._Execvslt     )      
-#        self._InstrSet.SetExec(Instr = "vmax",     Func = self._Execvmax     )      
-#        self._InstrSet.SetExec(Instr = "vmin",     Func = self._Execvmin     )      
-        self._InstrSet.SetExec(Instr = "vmul",     Func = self._Execvmul     )      
-#        self._InstrSet.SetExec(Instr = "vmulh",    Func = self._Execvmulh    )      
-#        self._InstrSet.SetExec(Instr = "vor",      Func = self._Execvor      )      
-#        self._InstrSet.SetExec(Instr = "vori",     Func = self._Execvori     )      
-#        self._InstrSet.SetExec(Instr = "vrem",     Func = self._Execvrem     )      
-#        self._InstrSet.SetExec(Instr = "vsll",     Func = self._Execvsll     )      
-#        self._InstrSet.SetExec(Instr = "vslli",    Func = self._Execvslli    )      
-#        self._InstrSet.SetExec(Instr = "vsra",     Func = self._Execvsra     )      
-#        self._InstrSet.SetExec(Instr = "vsrai",    Func = self._Execvsrai    )      
-#        self._InstrSet.SetExec(Instr = "vsrl",     Func = self._Execvsrl     )      
-#        self._InstrSet.SetExec(Instr = "vsrli",    Func = self._Execvsrli    )      
-#        self._InstrSet.SetExec(Instr = "vxor",     Func = self._Execvxor     )      
-#        self._InstrSet.SetExec(Instr = "vxori",    Func = self._Execvxori    )      
-#        self._InstrSet.SetExec(Instr = "vclass",   Func = self._Execvclass   )      
-#        self._InstrSet.SetExec(Instr = "vsgnj",    Func = self._Execvsgnj    )      
-#        self._InstrSet.SetExec(Instr = "vsgnjn",   Func = self._Execvsgnjn   )      
-#        self._InstrSet.SetExec(Instr = "vsgnjx",   Func = self._Execvsgnjx   )      
-#        self._InstrSet.SetExec(Instr = "vsqrt",    Func = self._Execvsqrt    )      
-#        self._InstrSet.SetExec(Instr = "vcvt",     Func = self._Execvcvt     )      
-#        self._InstrSet.SetExec(Instr = "vmv",      Func = self._Execvmv      )      
-        self._InstrSet.SetExec(Instr = "vld",      Func = self._Execvld      )      
-        self._InstrSet.SetExec(Instr = "vst",      Func = self._Execvst      )      
-#        self._InstrSet.SetExec(Instr = "vlds",     Func = self._Execvlds     )      
-#        self._InstrSet.SetExec(Instr = "vsts",     Func = self._Execvsts     )      
-        self._InstrSet.SetExec(Instr = "vldx",     Func = self._Execvldx     )      
-#        self._InstrSet.SetExec(Instr = "vstx",     Func = self._Execvstx     )      
-#        self._InstrSet.SetExec(Instr = "vamoswap", Func = self._Execvamoswap )      
-#        self._InstrSet.SetExec(Instr = "vamoadd",  Func = self._Execvamoadd  )      
-#        self._InstrSet.SetExec(Instr = "vamand",   Func = self._Execvamoand  )      
-#        self._InstrSet.SetExec(Instr = "vamoor",   Func = self._Execvamoor   )      
-#        self._InstrSet.SetExec(Instr = "vamoxor",  Func = self._Execvamoxor  )      
-#        self._InstrSet.SetExec(Instr = "vamomax",  Func = self._Execvamomax  )      
-#        self._InstrSet.SetExec(Instr = "vamomin",  Func = self._Execvamomin  )      
+#        self._InstrSet.SetExec(Instr = "vmadd",    Func = self._Execvmadd    )
+#        self._InstrSet.SetExec(Instr = "vnmadd",   Func = self._Execvnmadd   )
+#        self._InstrSet.SetExec(Instr = "vmsub",    Func = self._Execvmsub    )
+#        self._InstrSet.SetExec(Instr = "vnmsub",   Func = self._Execvnmsub   )
+        self._InstrSet.SetExec(Instr = "vadd",     Func = self._Execvadd     )
+#        self._InstrSet.SetExec(Instr = "vaddi",    Func = self._Execvaddi    )
+#        self._InstrSet.SetExec(Instr = "vsub",     Func = self._Execvsub     )
+#        self._InstrSet.SetExec(Instr = "vsubi",    Func = self._Execvsubi    )
+#        self._InstrSet.SetExec(Instr = "vand",     Func = self._Execvand     )
+#        self._InstrSet.SetExec(Instr = "vandi",    Func = self._Execvandi    )
+#        self._InstrSet.SetExec(Instr = "vdiv",     Func = self._Execvdiv     )
+#        self._InstrSet.SetExec(Instr = "vsge",     Func = self._Execvsge     )
+#        self._InstrSet.SetExec(Instr = "vsne",     Func = self._Execvsne     )
+#        self._InstrSet.SetExec(Instr = "vslt",     Func = self._Execvslt     )
+#        self._InstrSet.SetExec(Instr = "vmax",     Func = self._Execvmax     )
+#        self._InstrSet.SetExec(Instr = "vmin",     Func = self._Execvmin     )
+        self._InstrSet.SetExec(Instr = "vmul",     Func = self._Execvmul     )
+#        self._InstrSet.SetExec(Instr = "vmulh",    Func = self._Execvmulh    )
+#        self._InstrSet.SetExec(Instr = "vor",      Func = self._Execvor      )
+#        self._InstrSet.SetExec(Instr = "vori",     Func = self._Execvori     )
+#        self._InstrSet.SetExec(Instr = "vrem",     Func = self._Execvrem     )
+#        self._InstrSet.SetExec(Instr = "vsll",     Func = self._Execvsll     )
+#        self._InstrSet.SetExec(Instr = "vslli",    Func = self._Execvslli    )
+#        self._InstrSet.SetExec(Instr = "vsra",     Func = self._Execvsra     )
+#        self._InstrSet.SetExec(Instr = "vsrai",    Func = self._Execvsrai    )
+#        self._InstrSet.SetExec(Instr = "vsrl",     Func = self._Execvsrl     )
+#        self._InstrSet.SetExec(Instr = "vsrli",    Func = self._Execvsrli    )
+#        self._InstrSet.SetExec(Instr = "vxor",     Func = self._Execvxor     )
+#        self._InstrSet.SetExec(Instr = "vxori",    Func = self._Execvxori    )
+#        self._InstrSet.SetExec(Instr = "vclass",   Func = self._Execvclass   )
+#        self._InstrSet.SetExec(Instr = "vsgnj",    Func = self._Execvsgnj    )
+#        self._InstrSet.SetExec(Instr = "vsgnjn",   Func = self._Execvsgnjn   )
+#        self._InstrSet.SetExec(Instr = "vsgnjx",   Func = self._Execvsgnjx   )
+#        self._InstrSet.SetExec(Instr = "vsqrt",    Func = self._Execvsqrt    )
+#        self._InstrSet.SetExec(Instr = "vcvt",     Func = self._Execvcvt     )
+#        self._InstrSet.SetExec(Instr = "vmv",      Func = self._Execvmv      )
+        self._InstrSet.SetExec(Instr = "vld",      Func = self._Execvld      )
+        self._InstrSet.SetExec(Instr = "vst",      Func = self._Execvst      )
+#        self._InstrSet.SetExec(Instr = "vlds",     Func = self._Execvlds     )
+#        self._InstrSet.SetExec(Instr = "vsts",     Func = self._Execvsts     )
+        self._InstrSet.SetExec(Instr = "vldx",     Func = self._Execvldx     )
+#        self._InstrSet.SetExec(Instr = "vstx",     Func = self._Execvstx     )
+#        self._InstrSet.SetExec(Instr = "vamoswap", Func = self._Execvamoswap )
+#        self._InstrSet.SetExec(Instr = "vamoadd",  Func = self._Execvamoadd  )
+#        self._InstrSet.SetExec(Instr = "vamand",   Func = self._Execvamoand  )
+#        self._InstrSet.SetExec(Instr = "vamoor",   Func = self._Execvamoor   )
+#        self._InstrSet.SetExec(Instr = "vamoxor",  Func = self._Execvamoxor  )
+#        self._InstrSet.SetExec(Instr = "vamomax",  Func = self._Execvamomax  )
+#        self._InstrSet.SetExec(Instr = "vamomin",  Func = self._Execvamomin  )
+        # 添加MIPS指令集
+        self._InstrSet.SetExec(Instr = "move",     Func = self._Execmv     )
+        # self._InstrSet.SetExec(Instr = "addi",     Func = self._Execmv     )
+        self._InstrSet.SetExec(Instr = "addu",     Func = self._Execadd     )
+        self._InstrSet.SetExec(Instr = "add",     Func = self._Execadd     )
+        self._InstrSet.SetExec(Instr = "beq",     Func = self._Execbeq     )
+        self._InstrSet.SetExec(Instr = "bne",     Func = self._Execbneq     )
+        self._InstrSet.SetExec(Instr = "andi",     Func = self._Execandi     )
+        self._InstrSet.SetExec(Instr = "srl",     Func = self._Execsrli     )
+        self._InstrSet.SetExec(Instr = "sll",     Func = self._Execslli     )
+        self._InstrSet.SetExec(Instr = "sltu",     Func = self._Execsltu     )
 
 
-		
+
     def SaveSelf(self):
         return copy.deepcopy(self)
 
     def RecoverSelf(self, Saved):
         # Recover internal state from the saved state
-        self._RF          = Saved._RF      
-        self._AsmCode     = Saved._AsmCode 
-        self._DataMem     = Saved._DataMem 
-        self._PCStack     = Saved._PCStack 
+        self._RF          = Saved._RF
+        self._AsmCode     = Saved._AsmCode
+        self._DataMem     = Saved._DataMem
+        self._PCStack     = Saved._PCStack
         self._InstrSet    = Saved._InstrSet
-        self._IC          = Saved._IC      
-        self._Cycles      = Saved._Cycles  
-        self._BeginSP     = Saved._BeginSP 
-        self._EndSP       = Saved._EndSP   
+        self._IC          = Saved._IC
+        self._Cycles      = Saved._Cycles
+        self._BeginSP     = Saved._BeginSP
+        self._EndSP       = Saved._EndSP
         self._LogFileName = Saved._LogFileName
         self._Log         = Saved._Log
-        self._verbose     = Saved._verbose 
+        self._verbose     = Saved._verbose
 
     def IncreaseIC(self, Instr):
         if Instr in self._IC.keys():
@@ -148,7 +159,7 @@ class CryptoExecutor:
             self._IC[Instr] = 1
 
     def IncreaseCycles(self, Instr, key, value):
-        assert (key=="Serial") or (key=="Parallel"), "Wrong Parameters\n" 
+        assert (key=="Serial") or (key=="Parallel"), "Wrong Parameters\n"
         if Instr in self._Cycles.keys():
             if key in self._Cycles[Instr].keys():
                 self._Cycles[Instr][key] = self._Cycles[Instr][key] + value
@@ -166,7 +177,7 @@ class CryptoExecutor:
         for instr in self._IC.keys():
             TotalIC = TotalIC + self._IC[instr]
         return TotalIC
-        
+
     # Used to calculte total clock cycles
     # Set InstrParallel=True to analysis total clock cycles with instruction parallelism considered
     def GetTotalCycles(self, InstrParallel=False):
@@ -190,7 +201,7 @@ class CryptoExecutor:
             self._FuncBeginCycle.append(None)
             self._FuncEndCycle.append(None)
             self._FuncCycles.append(0)
-        
+
     # Report information about the whole program
     # Used to analysis performance of the whole system
     def Report(self, File):
@@ -221,7 +232,7 @@ class CryptoExecutor:
             print("%-30s : %-10s"%("Function Label", str(self._FuncLabel[index])), sep="", end="\n", file=HFile, flush=False)
             print("%-30s : %-10s"%("Cycles Totally", str(self._FuncCycles[index])), sep="", end="\n", file=HFile, flush=False)
             print("\n")
-        
+
 
 
         HFile.close()
@@ -244,7 +255,7 @@ class CryptoExecutor:
             ExecStatus, NextPC = self.StepAsm(PC=CurrentPC)
             CurrentPC = NextPC
             assert ExecStatus, "Run Failed\n"
-            
+
     # Use assembly code to simulate hardware behaviour
     def StepAsm(self, PC=None):
         assert PC != None, "Wrong Parameters\n"
@@ -268,13 +279,14 @@ class CryptoExecutor:
         else:
             print("Unknown Instruction or Instructions Matched Twice "+Asm+"\n")
             print("Exiting...\n")
-            sys.exit("Run Failed\n")   
+            sys.exit("Run Failed\n")
 
     def RunAsm(self, PC=None):
         assert PC != None, "Wrong Parameters\n"
         if self._verbose:
             print("Running Asm. Start PC = " + str(PC))
-        while self._RF["PC"] != None and (PC != self._AsmCode.LabelToPC('end')):
+        end_PC = self._AsmCode.LabelToPC('end')
+        while self._RF["PC"] != None and (PC != end_PC):
             self._RF["PC"] = PC   # Set current PC
             ExecStatus, PC = self.StepAsm(PC)
             self._RF["PC"] = PC   # Update PC
@@ -284,7 +296,7 @@ class CryptoExecutor:
 	# Modeling Behaviour of each instructions
     def _ExecBLANK  (self, Asm="", PC=None):
         return True, PC+1
-   
+
     def _ExecCOMMENT(self, Asm="", PC=None):
         return True, PC+1
 
@@ -292,7 +304,7 @@ class CryptoExecutor:
         if self._verbose:
             print("label:"+Asm)
         return True, PC+1
-		
+
     def _Execsetvl    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -313,7 +325,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result 1 : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execvld    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -336,7 +348,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result 1 : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execvmul    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -361,7 +373,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execvst    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -387,7 +399,7 @@ class CryptoExecutor:
             if Addr > self._EndSP:
                 self._EndSP = Addr
             return True, PC+1
-			
+
     def _Execadd    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -407,7 +419,50 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
+    def _Execsltu    (self, Asm="", PC=None):
+        # Instruction Behaviour
+        Match = self._InstrSet.Match(Asm)
+        ret, r1, r2 = Match.group(1), Match.group(2), Match.group(3)
+        if self._RF.IsLocked(r1) or self._RF.IsLocked(r2) or self._RF.IsLocked(ret):
+            return False, PC
+        else:
+            s1 = self._RF[r1]
+            s2 = self._RF[r2]
+            self._Log.write("Source Reg 1 : %s = %x  \nSource Reg 2 : %s = %x  \n"%(r1, s1, r2, s2))
+            result = 1 if (s1 < s2) else 0
+            self._RF[ret] = result
+            # Information to be reported
+            Matched, Instr = self._InstrSet.MatchedOnce(Asm)
+            self.IncreaseIC(Instr)
+            self.IncreaseCycles(Instr, "Serial", self._InstrSet.GetCycles(Instr))
+            self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
+            self._Log.write("Result : %s = %x \n"%(ret, result))
+            return True, PC+1
+
+    def _Execandi    (self, Asm="", PC=None):
+        # Instruction Behaviour
+        Match = self._InstrSet.Match(Asm)
+        ret, r1  = Match.group(1), Match.group(2)
+        if re.match('-?0x', Match.group(3)):
+            imm = int(Match.group(3), 16)
+        else:
+            imm = int(Match.group(3))
+        if self._RF.IsLocked(r1) or self._RF.IsLocked(ret):
+            return False, PC
+        else:
+            s1 = self._RF[r1]
+            self._Log.write("Source Reg 1 : %s = %x  \nImm : %x  \n"%(r1, s1, imm))
+            result = s1 & imm
+            self._RF[ret] = result
+            # Information to be reported
+            Matched, Instr = self._InstrSet.MatchedOnce(Asm)
+            self.IncreaseIC(Instr)
+            self.IncreaseCycles(Instr, "Serial", self._InstrSet.GetCycles(Instr))
+            self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
+            self._Log.write("Result : %s = %x \n"%(ret, result))
+            return True, PC+1
+
     def _Execsub    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -427,7 +482,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execli(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -445,7 +500,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execmv(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -459,7 +514,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execbnez   (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -476,7 +531,7 @@ class CryptoExecutor:
                 return True, self._AsmCode.LabelToPC(label)
             else:
                 return True, PC+1
-				
+
     def _Execbneq   (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -493,7 +548,24 @@ class CryptoExecutor:
                 return True, self._AsmCode.LabelToPC(label)
             else:
                 return True, PC+1
-				
+
+    def _Execbeq   (self, Asm="", PC=None):
+        # Instruction Behaviour
+        Match = self._InstrSet.Match(Asm)
+        r1, r2, label = Match.group(1), Match.group(2), Match.group(3)
+        if self._RF.IsLocked(r1):
+            return False, PC
+        else:
+            # Information to be reported
+            Matched, Instr = self._InstrSet.MatchedOnce(Asm)
+            self.IncreaseIC(Instr)
+            self.IncreaseCycles(Instr, "Serial", self._InstrSet.GetCycles(Instr))
+            self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
+            if self._RF[r1] == self._RF[r2]:
+                return True, self._AsmCode.LabelToPC(label)
+            else:
+                return True, PC+1
+
     def _Execret   (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -503,7 +575,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Serial", self._InstrSet.GetCycles(Instr))
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         return True, self._RF["ra"]
-		
+
     def _Execvadd    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -528,7 +600,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execvstx    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -553,7 +625,7 @@ class CryptoExecutor:
             if Addr > self._EndSP:
                 self._EndSP = Addr
             return True, PC+1
-			
+
     def _Execvldx    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -574,7 +646,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Serial", self._InstrSet.GetCycles(Instr))
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             return True, PC+1
-			
+
     def _Execsw(self, Asm="", PC=None):
         # Instruction behaviour
         Match = self._InstrSet.Match(Asm)
@@ -598,7 +670,7 @@ class CryptoExecutor:
         if Addr > self._EndSP:
             self._EndSP = Addr
         return True, PC + 1
-			
+
     def _Execsrli(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -618,7 +690,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execslli(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -638,7 +710,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execaddi(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -658,7 +730,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execsubi(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -678,7 +750,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execld(self, Asm="", PC=None):
         # Instruction behaviour
         Match = self._InstrSet.Match(Asm)
@@ -702,7 +774,7 @@ class CryptoExecutor:
         if Addr > self._EndSP:
             self._EndSP = Addr
         return True, PC + 1
-		
+
     def _Execliv(self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -720,7 +792,7 @@ class CryptoExecutor:
         self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
         self._Log.write("Result : %s = %x \n" % (ret, self._RF[ret]))
         return True, PC + 1
-		
+
     def _Execmul    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -740,7 +812,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result : %s = %x \n"%(ret, result))
             return True, PC+1
-			
+
     def _Execdiv    (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -760,7 +832,7 @@ class CryptoExecutor:
             self.IncreaseCycles(Instr, "Parallel", self._InstrSet.GetCycles(Instr))
             self._Log.write("Result 1 : %s = %x \nResult 2 : %s = %x"%(r1, self._RF[r1], r2, self._RF[r2]))
             return True, PC+1
-			
+
     def _Execcall  (self, Asm="", PC=None):
         # Instruction Behaviour
         Match = self._InstrSet.Match(Asm)
@@ -773,7 +845,7 @@ class CryptoExecutor:
         return True, self._AsmCode.LabelToPC(label)
 
 
-			
+
 class CryptoDataMemory:
     # Mif file is used to initialize data memory
     def __init__(self, InitFile=None):
@@ -789,7 +861,7 @@ class CryptoDataMemory:
     def __getitem__(self, addr):
         assert addr in self._Mem.keys(), "Read memory without initilization \n"
         return self._Mem[addr]
-       
+
     def __setitem__(self, addr, data):
         self._Mem[addr] = data
 
@@ -802,7 +874,7 @@ class CryptoInstrMemory:
     def __init__(self, InitFile=None):
         """ Not implemented yet """
         pass
-        
+
 class CryptoPCStack:
     # Program Stack. Width : 32 bits
     def __init__(self):
@@ -821,7 +893,7 @@ class CryptoPCStack:
         return PC
     def CurrentValue(self):
         return self._Stack[-1]
-    
+
 
 class CryptoAsmCode:
     # Mif file is used to initlized CryptoAsmCode
@@ -836,10 +908,10 @@ class CryptoAsmCode:
             if not re.match(r".*_startUp_filter\.S", AsmFile):
                 for line in fileinput.input(AsmFile):
                     self._AsmCode.append(line.strip("\n,\r"))
-       
+
 
     def LabelToPC(self, Label):
-      
+
         assert self._AsmCode.count(Label+":")==1, "Label Error, multiple label found in asm code\n"
         return self._AsmCode.index(Label+":")
 
@@ -847,7 +919,7 @@ class CryptoAsmCode:
     def __getitem__(self, index):
         return self._AsmCode[index]
 
-    def __setitem__(self, index, value): 
+    def __setitem__(self, index, value):
         self._AsmCoe[index] = value
 
     # Since the asm code is read only, it is not to deepcoy this class to save current state
@@ -860,7 +932,7 @@ class CryptoAsmCode:
 class CryptoRegFiles:
     def __init__(self):
         # Control register. Width : 32 bits
-        # Assuming the initialized value is 0, be careful				
+        # Assuming the initialized value is 0, be careful
         CSR = {"CY" : {"Value": 0, "Locked": False},
                "mvl" : {"Value": 8, "Locked": False},
                "vl" : {"Value": 0, "Locked": False},
@@ -900,11 +972,26 @@ class CryptoRegFiles:
 		        "s28" : {"Value" : 0, "Locked" : False},
 		        "s29" : {"Value" : 0, "Locked" : False},
 		        "s30" : {"Value" : 0, "Locked" : False},
-                "s31" : {"Value" : 0, "Locked" : False},}
+                "s31" : {"Value" : 0, "Locked" : False},
+                "$0" : {"Value" : 0, "Locked" : False},  # 添加MIPS寄存器
+                "$s0" : {"Value" : 0, "Locked" : False},
+                "$s1" : {"Value" : 0, "Locked" : False},
+                "$s2" : {"Value" : 0, "Locked" : False},
+                "$s3" : {"Value" : 0, "Locked" : False},
+                "$s4" : {"Value" : 0, "Locked" : False},
+
+
+                "$v0" : {"Value" : 0, "Locked" : False},
+                "$v1" : {"Value" : 0, "Locked" : False},
+                "$v2" : {"Value" : 0, "Locked" : False},
+                "$v3" : {"Value" : 0, "Locked" : False},
+                "$v4" : {"Value" : 0, "Locked" : False},
+                "$v5" : {"Value" : 0, "Locked" : False},
+                }
 
 		# Vector registers. Width : 8 * 32 = 256 bits. The total sum is 32.
 		# Assuming the initialized value is 0, be careful
-        
+
         Vector ={
 		        "v0" :  {"Value" : 0, "Locked" : False},
                 "v1" :  {"Value" : 0, "Locked" : False},
@@ -947,17 +1034,28 @@ class CryptoRegFiles:
 		        "a2" : {"Value" : 0, "Locked" : False},
 		        "a3" : {"Value" : 0, "Locked" : False},
 		        "a4" : {"Value" : 0, "Locked" : False},
-		        "a5" : {"Value" : 0, "Locked" : False},}
-				
+		        "a5" : {"Value" : 0, "Locked" : False},
+                "$a0" : {"Value" : 0, "Locked" : False},
+                "$a1" : {"Value" : 0, "Locked" : False},
+                "$a2" : {"Value" : 0, "Locked" : False},
+                "$a3" : {"Value" : 0, "Locked" : False},
+                "$a4" : {"Value" : 0, "Locked" : False},
+                "$a5" : {"Value" : 0, "Locked" : False},}
+
 		# Tempt Register. Width : 256 bits
         # Assuming the initialized value is 0, be careful
         Tempt = { "t0" : {"Value" : 0, "Locked" : False},
-                  "t1" : {"Value" : 0, "Locked" : False}, }
+                  "t1" : {"Value" : 0, "Locked" : False},
+                  "$t0" : {"Value" : 0, "Locked" : False},
+                  "$t1" : {"Value" : 0, "Locked" : False},
+                  "$t2" : {"Value" : 0, "Locked" : False},
+                  "$t3" : {"Value" : 0, "Locked" : False},
+                  "$t4" : {"Value" : 0, "Locked" : False},}
 
 		# Return Address Register. Width : 256 bits
         # Assuming the initialized value is 0, be careful
         RA = { "ra" : {"Value" : 0, "Locked" : False} }
-        
+
 		# Link Register. Width : 256 bits
         # Assuming the initialized value is 0, be careful
         LR = { "lr" : {"Value" : 0, "Locked" : False} }
@@ -991,7 +1089,7 @@ class CryptoRegFiles:
         self._RF.update(PC)
         self._RF.update(RA)
 
-        
+
 
         # Performance Evaluation
         self._BeginSP = None
@@ -1000,7 +1098,7 @@ class CryptoRegFiles:
     def __getitem__(self, RegName):
         assert RegName in self._RF.keys(), "Error Register Name\n"
         return self._RF[RegName]["Value"]
-        
+
     def __setitem__(self, RegName, Value):
         assert RegName in self._RF.keys(), "Error Register Name\n"
         self._RF[RegName]["Value"] = Value
@@ -1025,19 +1123,19 @@ class CryptoInstrSet:
         # Parameters for each instructions, including clock cycles to run each instruction
         # hardware hehaviour and regular expression patterns required to intepret asm code
         self._InstrParams = {
-                # Used to intepret blank line in asm code 
+                # Used to intepret blank line in asm code
                 "BLANK"      :  { "Cycles"  : 0                                           ,
-                                  "Exec"    : None                                        , 
-                                  "Pattern" : re.compile("^\s*$")                         , 
+                                  "Exec"    : None                                        ,
+                                  "Pattern" : re.compile("^\s*$")                         ,
                                   "Params"  : 0}                                          ,
                 # Used to intepret comment line in asm code
                 "COMMENT"    :  { "Cycles"  : 0                                           ,
-                                  "Exec"    : None                                        , 
-                                  "Pattern" : re.compile("^#")                            , 
+                                  "Exec"    : None                                        ,
+                                  "Pattern" : re.compile("^#")                            ,
                                   "Params"  : 0}                                          ,
                 # Pseudo insturctions
                 "LABEL"      :  { "Cycles"  : 0                                           ,
-                                  "Exec"    : None                                        , 
+                                  "Exec"    : None                                        ,
                                   "Pattern" : re.compile("[^#].+?:")                      ,
                                   "Params"  : 0},
                 "setvl": { "Cycles": 1,
@@ -1047,7 +1145,7 @@ class CryptoInstrSet:
                 "vld": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+vld\s+(\w+)\,\s+(\w+)"),
-                    "Params": 0},	
+                    "Params": 0},
                 "vmul": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+vmul\s+(\w+)\,\s+(\w+)\,\s+(\w+)"),
@@ -1072,6 +1170,14 @@ class CryptoInstrSet:
                     "Exec": None,
                     "Pattern": re.compile("\s+bneq\s+(\w+)\,\s+(\w+)\,\s+(\w+)"),
                     "Params": 0},
+                "beq": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*beq\s+(\$\w+)\,\s+(\$\w+)\,\s+(\w+)"),
+                    "Params": 0},
+                "bne": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*bne\s+(\$\w+)\,\s+(\$\w+)\,\s+(\w+)"),
+                    "Params": 0},
                 "ret": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+ret"),
@@ -1088,13 +1194,25 @@ class CryptoInstrSet:
                     "Exec": None,
                     "Pattern": re.compile("\s+vst\s+(\w+)\,\s+(\w+)"),
                     "Params": 0},
+                "sltu": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*sltu\s+(\$\w+)\,\s+(\$\w+)\,\s+(\$\w+)"),
+                    "Params": 0},
                 "srli": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+srli\s+(\w+)\,\s+(\w+)\,\s+(-?\w+)"),
                     "Params": 0},
+                "srl": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*srl\s+(\$\w+)\,\s+(\$\w+)\,\s+(-?\w+)"),
+                    "Params": 0},
                 "slli": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+slli\s+(\w+)\,\s+(\w+)\,\s+(-?\w+)"),
+                    "Params": 0},
+                "sll": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*sll\s+(\$\w+)\,\s+(\$\w+)\,\s+(-?\w+)"),
                     "Params": 0},
                 "ld": {"Cycles": 1,
                     "Exec": None,
@@ -1124,9 +1242,25 @@ class CryptoInstrSet:
                    "Exec": None,
                    "Pattern": re.compile("\s+mv\s+(\w+)\,\s+(\w+)"),
                    "Params": 0},
+                "move": {"Cycles": 1,
+                   "Exec": None,
+                   "Pattern": re.compile("\s*move\s+(\$\w+)\,\s+(\$\w+)"),
+                   "Params": 0},
                 "addi": {"Cycles": 1,
                     "Exec": None,
-                    "Pattern": re.compile("\s+addi\s+(\w+)\,\s+(\w+)\,\s+(-?\w+)"),
+                    "Pattern": re.compile("\s*addi\s+(\$\w+)\,\s+(\$\w+)\,\s+(-?\w+)"),
+                    "Params": 0},
+                "addu": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*addu\s+(\$\w+)\,\s+(\$\w+)\,\s+(\$\w+)"),
+                    "Params": 0},
+                "add": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*add\s+(\$\w+)\,\s+(\$\w+)\,\s+(\$\w+)"),
+                    "Params": 0},
+                "andi": {"Cycles": 1,
+                    "Exec": None,
+                    "Pattern": re.compile("\s*andi\s+(\$\w+)\,\s+(\$\w+)\,\s+(-?\w+)"),
                     "Params": 0},
                 "subi": {"Cycles": 1,
                     "Exec": None,
@@ -1135,7 +1269,7 @@ class CryptoInstrSet:
                 "call": {"Cycles": 1,
                     "Exec": None,
                     "Pattern": re.compile("\s+call\s+(\w+)"),
-                    "Params": 0},						  
+                    "Params": 0},
         }
 
     # Set the behaviour of given instruction
@@ -1181,7 +1315,7 @@ class CryptoInstrSet:
             if self._InstrParams[Instr]["Pattern"].match(Asm):
                 Instructions.append(Instr)
         return Instructions
-                    
+
     def Match(self, Asm):
         if self.MatchedOnce(Asm):
             for Instr in self._InstrParams.keys():
@@ -1211,5 +1345,4 @@ class Simulator(CryptoExecutor):
 
 if __name__=='__main__':
     print("Simulator for cyrptography processor\n")
-            
-       
+
